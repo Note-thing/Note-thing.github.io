@@ -203,6 +203,7 @@ p {
   transition: all 0.3s ease-out 0s;
 }
 
+/*! purgecss start ignore */
 .sticky {
   position: fixed;
   z-index: 99;
@@ -218,6 +219,7 @@ p {
 .sticky .navbar {
   padding: 0;
 }
+/*! purgecss end ignore */
 
 .navbar {
   padding: 0px 0;
@@ -272,6 +274,7 @@ p {
   top: -7px;
 }
 
+/*! purgecss start ignore */
 @media only screen and (min-width: 768px) and (max-width: 991px), (max-width: 767px) {
   .navbar-collapse {
     position: absolute;
@@ -291,6 +294,7 @@ p {
     display: block;
   }
 }
+/*! purgecss end ignore */
 
 @media only screen and (min-width: 768px) and (max-width: 991px), (max-width: 767px) {
   .navbar-nav {
@@ -373,6 +377,7 @@ p {
   }
 }
 
+/*! purgecss ignore */
 .navbar-nav .nav-item .ud-submenu.show {
   display: block;
 }
@@ -459,6 +464,7 @@ p {
   color: var(--heading-color);
 }
 
+/*! purgecss start ignore */
 .sticky .navbar-toggler .toggler-icon {
   background-color: var(--heading-color);
 }
@@ -494,6 +500,7 @@ p {
 .sticky .navbar-btn .ud-white-btn:hover {
   background: var(--heading-color);
 }
+/*! purgecss end ignore */
 
 /* ===== Hero CSS ===== */
 .ud-hero {
