@@ -23,7 +23,7 @@ jobs:
       with:
         node-version: '14'
     - run: npm i -g purgecss
-    - run: purgecss --css 'assets/*.css' --content '*.html' --out 'assets/test/'
+    - run: purgecss --css 'assets/*.css' --content '*.html' --output 'assets/test/'
     
     - name: Auto committing minified files
       uses: stefanzweifel/git-auto-commit-action@v4
