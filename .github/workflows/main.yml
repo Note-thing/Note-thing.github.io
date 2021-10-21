@@ -35,7 +35,7 @@ jobs:
     - name: Auto Minify JS
       uses: nizarmah/auto-minify@v2.1
       with:
-        directory: 'assets/test'
+        directory: 'assets/js'
 
     # Auto commits minified files to the repository
     # Ignore it if you don't want to commit the files to the repository 
