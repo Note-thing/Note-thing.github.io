@@ -17,11 +17,25 @@ jobs:
     
     # Checks-out your repository under $GITHUB_WORKSPACE, so auto-minify job can access it
     - uses: actions/checkout@v2
+    
+    - name: PurgeCSS
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+    - run: npm i --save-dev purgecss
+    - run: npm purgecss --css 'assets/*.css' --content '*.html' --out 'assets/test/'
+    
+    - name: Auto committing minified files
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        repository: 'assets/test'
+        commit_message: "Github Action: Purged CSS files"
+        branch: ${{ github.ref }}
 
     - name: Auto Minify JS
       uses: nizarmah/auto-minify@v2.1
       with:
-        directory: 'assets/js'
+        directory: 'assets/test'
 
     # Auto commits minified files to the repository
     # Ignore it if you don't want to commit the files to the repository 
