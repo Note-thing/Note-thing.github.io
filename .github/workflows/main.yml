@@ -51,3 +51,26 @@ jobs:
         repository: 'assets/css'
         commit_message: "Github Action: Purged CSS files"
         branch: ${{ github.ref }}
+
+  sitemap:
+    runs-on: ubuntu-latest
+    name: Generate a sitemap
+
+    steps:
+    - name: Checkout the repo
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 
+
+    - name: Generate the sitemap
+      id: sitemap
+      uses: cicirello/generate-sitemap@v1
+      with:
+        base-url-path: https://note-thing.github.io/
+        
+    - name: Auto committing sitemap
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        file_pattern: '*.xml'
+        commit_message: "Github Action: Generate sitemap"
+        branch: ${{ github.ref }}
