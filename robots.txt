@@ -1,4 +1,5 @@
 User-agent: *
 Disallow: /assets/
+Disallow: /google585797f98f6722eb.html
 
 Sitemap: https://note-thing.github.io/sitemap.xml
