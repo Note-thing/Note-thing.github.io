@@ -86,6 +86,7 @@ jobs:
         path: sitemap.xml
         
   commit:
+    needs: [minify, sitemap]
     runs-on: ubuntu-latest
     
     steps:
