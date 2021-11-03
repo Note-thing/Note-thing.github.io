@@ -1,61 +1,67 @@
 name: CI
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push request events but only for the master branch
   push:
     branches: [ master ]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
-  minify:
+  minify-js:
     runs-on: ubuntu-latest
 
     steps:
-    
-    # Checks-out your repository under $GITHUB_WORKSPACE, so auto-minify job can access it
     - uses: actions/checkout@v2
 
     - name: Auto Minify JS
       uses: nizarmah/auto-minify@v2.1
       with:
         directory: 'assets/js'
-
-    # Auto commits minified files to the repository
-    # Ignore it if you don't want to commit the files to the repository 
-    - name: Auto committing minified files
-      uses: stefanzweifel/git-auto-commit-action@v4
+        
+    - uses: actions/upload-artifact@v2
       with:
-        repository: 'assets/js'
-        commit_message: "Github Action: Auto Minified JS files"
-        branch: ${{ github.ref }}
+        name: minified-js
+        path: assets/js/*.min.js
+        
+  minify-css:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
         
     - name: Auto Minify CSS
       uses: nizarmah/auto-minify@v2.1
       with:
-        directory: 'assets/css'
-  
-    # Purge CSS files content not used int html files
-    - name: PurgeCSS
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-    - run: npm i -g purgecss
-    - run: purgecss --css 'assets/css/*.min.css' --content '*.html' --output 'assets/css/'
-    
-    - name: Auto committing purged CSS files
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        repository: 'assets/css'
-        commit_message: "Github Action: Purged CSS files"
-        branch: ${{ github.ref }}
+        directory: 'assets/css'    
         
     - uses: actions/upload-artifact@v2
       with:
-        name: css
-        path: assets/css/
+        name: minified-css
+        path: assets/css/*.min.css
+  
+  purge-css:
+    needs: minify-css
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - uses: actions/download-artifact@v2
+        with:
+          name: minified-css
+          path: assets/css/
+
+      - name: PurgeCSS
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - run: npm i -g purgecss
+      - run: purgecss --css 'assets/css/*.min.css' --content '*.html' --output 'assets/css/'
+      
+      - uses: actions/upload-artifact@v2
+        with:
+          name: purged-css
+          path: assets/css/*.min.css
 
   sitemap:
     runs-on: ubuntu-latest
@@ -73,33 +79,40 @@ jobs:
       with:
         base-url-path: https://note-thing.github.io/
         
-    - name: Auto committing sitemap
-      uses: stefanzweifel/git-auto-commit-action@v4
+    - uses: actions/upload-artifact@v2
       with:
-        file_pattern: '*.xml'
-        commit_message: "Github Action: Generate sitemap"
-        branch: ${{ github.ref }}
-        
-    #- uses: actions/upload-artifact@v2
-    #  with:
-    #    name: sitemap
-    #    path: sitemap.xml
+        name: sitemap
+        path: sitemap.xml
         
   commit:
-    needs: [minify, sitemap]
+    needs: [minify-js, purge-css, sitemap]
     runs-on: ubuntu-latest
     
     steps:
       - uses: actions/checkout@v2
-      
-      - name: "delete sitemap" 
-        run: "rm sitemap.xml"
 
       - uses: actions/download-artifact@v2
         with:
           name: sitemap
           path: ./
+          
+      - uses: actions/download-artifact@v2
+        with:
+          name: purged-css
+          path: assets/css/
+          
+      - uses: actions/download-artifact@v2
+        with:
+          name: minified-js
+          path: assets/js/
 
       - name: Display structure of downloaded files
         run: ls -R
         working-directory: ./
+
+      - name: Auto committing new files
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          repository: './'
+          commit_message: "Github Action: newly generated files"
+          branch: ${{ github.ref }}
