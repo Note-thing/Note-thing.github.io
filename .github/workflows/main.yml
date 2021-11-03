@@ -80,10 +80,10 @@ jobs:
         commit_message: "Github Action: Generate sitemap"
         branch: ${{ github.ref }}
         
-    - uses: actions/upload-artifact@v2
-      with:
-        name: ./
-        path: sitemap.xml
+    #- uses: actions/upload-artifact@v2
+    #  with:
+    #    name: sitemap
+    #    path: sitemap.xml
         
   commit:
     needs: [minify, sitemap]
@@ -91,9 +91,13 @@ jobs:
     
     steps:
       - uses: actions/checkout@v2
+      
+      - name: "delete sitemap" 
+        run: "rm sitemap.xml"
 
       - uses: actions/download-artifact@v2
         with:
+          name: sitemap
           path: ./
 
       - name: Display structure of downloaded files
