@@ -82,7 +82,7 @@ jobs:
         
     - uses: actions/upload-artifact@v2
       with:
-        name: sitemap
+        name: ./
         path: sitemap.xml
         
   commit:
@@ -99,3 +99,5 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R
         working-directory: ./
+        
+      -name 
