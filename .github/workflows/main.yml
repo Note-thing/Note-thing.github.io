@@ -106,10 +106,6 @@ jobs:
           name: minified-js
           path: assets/js/
 
-      - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: ./
-
       - name: Auto committing new files
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
